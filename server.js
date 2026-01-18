@@ -4,6 +4,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import pgClient from "./db.js";
 import songRoutes from "./routes/songs.js";
+import reviewRoutes from "./routes/reviews.js";
 
 
 
@@ -16,6 +17,9 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+
+app.use("/api/songs", songRoutes);
+app.use("/api/songs", reviewRoutes);
 
 // Endpoints
 // http://localhost:5000/
@@ -37,7 +41,7 @@ app.get("/api/db-test", async (req, res) => {
   }
 });
 
-app.use("/api/songs", songRoutes);
+
 
 // Not found Route
 app.use((req, res) => {
