@@ -1,5 +1,6 @@
 import express from "express";
 import pgClient from "../db.js";
+import adminAuth from "../middleware/adminAuth.js";
 
 const router = express.Router();
 
@@ -8,7 +9,7 @@ const router = express.Router();
  * Base: /api/songs
  */
 
-// GET /api/songs (list songs)
+// GET /api/songs (public)
 router.get("/", async (req, res) => {
   try {
     const result = await pgClient.query("SELECT * FROM songs ORDER BY id DESC");
@@ -18,7 +19,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/songs/:id (song details)
+// GET /api/songs/:id (public)
 router.get("/:id", async (req, res) => {
   try {
     const result = await pgClient.query("SELECT * FROM songs WHERE id = $1", [
@@ -35,8 +36,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST /api/songs (add song)
-router.post("/", async (req, res) => {
+// POST /api/songs (admin only)
+router.post("/", adminAuth, async (req, res) => {
   const { title, artist, genre, cover_url } = req.body;
 
   if (!title || !artist) {
@@ -57,8 +58,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT /api/songs/:id (edit song)
-router.put("/:id", async (req, res) => {
+// PUT /api/songs/:id (admin only)
+router.put("/:id", adminAuth, async (req, res) => {
   const { title, artist, genre, cover_url } = req.body;
 
   if (!title || !artist) {
@@ -84,8 +85,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE /api/songs/:id (delete song)
-router.delete("/:id", async (req, res) => {
+// DELETE /api/songs/:id (admin only)
+router.delete("/:id", adminAuth, async (req, res) => {
   try {
     const result = await pgClient.query(
       "DELETE FROM songs WHERE id = $1 RETURNING *",

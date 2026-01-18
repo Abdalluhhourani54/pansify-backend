@@ -1,5 +1,6 @@
 import express from "express";
 import pgClient from "../db.js";
+import adminAuth from "../middleware/adminAuth.js";
 
 const router = express.Router();
 
@@ -8,13 +9,12 @@ const router = express.Router();
  * Base: /api/requests
  */
 
-// GET /api/requests (admin: list all) OR /api/requests?email=...
+// GET /api/requests  OR  /api/requests?email=...
 router.get("/", async (req, res) => {
   try {
     const { email } = req.query;
 
     if (email) {
-      // user view own requests
       const result = await pgClient.query(
         "SELECT * FROM song_requests WHERE requester_email = $1 ORDER BY id DESC",
         [email]
@@ -22,7 +22,6 @@ router.get("/", async (req, res) => {
       return res.json(result.rows);
     }
 
-    // admin list all
     const result = await pgClient.query(
       "SELECT * FROM song_requests ORDER BY id DESC"
     );
@@ -33,7 +32,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST /api/requests (user: create request)
+// POST /api/requests (user create request)
 router.post("/", async (req, res) => {
   try {
     const { title, artist, genre, requester_email } = req.body;
@@ -58,8 +57,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT /api/requests/:id/approve (admin)
-router.put("/:id/approve", async (req, res) => {
+// PUT /api/requests/:id/approve (admin only)
+router.put("/:id/approve", adminAuth, async (req, res) => {
   try {
     const result = await pgClient.query(
       `UPDATE song_requests
@@ -80,8 +79,8 @@ router.put("/:id/approve", async (req, res) => {
   }
 });
 
-// PUT /api/requests/:id/reject (admin)
-router.put("/:id/reject", async (req, res) => {
+// PUT /api/requests/:id/reject (admin only)
+router.put("/:id/reject", adminAuth, async (req, res) => {
   try {
     const result = await pgClient.query(
       `UPDATE song_requests
