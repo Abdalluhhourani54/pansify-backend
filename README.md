@@ -1,122 +1,148 @@
-Pansify Backend (Express + PostgreSQL)
+# 🧠 Pansify Backend
+## Express.js + PostgreSQL REST API
 
-This is the backend for Pansify, a modern music review platform.
-It provides REST APIs for authentication, songs management, reviews, and song requests.
+This project is the backend implementation for **Pansify**, a modern music review platform.
+The backend provides RESTful APIs to support user authentication, songs management, reviews,
+and song requests. It is built using **Node.js, Express, and PostgreSQL**, following the same
+simple structure and concepts taught in the course.
 
-🏗️ Tech Stack
+---
 
-Node.js + Express
+# 🏗️ Technology Stack
 
-PostgreSQL (via pg, pgAdmin)
+- **Node.js** – JavaScript runtime
+- **Express.js** – Backend framework
+- **PostgreSQL** – Relational database
+- **pg** – PostgreSQL client for Node.js
+- **dotenv** – Environment variable management
+- **cors** – Cross-origin request handling
+- **morgan** – HTTP request logging
 
-dotenv
+---
 
-cors
+# 🚀 Getting Started
 
-morgan
+## 1️⃣ Install Dependencies
 
-🚀 Getting Started
-1. Install dependencies
+```bash
 cd pansify-backend
 npm install
 
-2. Create a PostgreSQL database
-
-Create a database (example name):
 
 pansify_db
+ 
+ psql -d pansify_db -f schema.sql
 
-3. Run database schema
+This will create the following tables:
 
-Using pgAdmin Query Tool or terminal:
+users
 
-psql -d pansify_db -f schema.sql
+songs
 
-4. Environment variables
+reviews
 
-Create a .env file in the project root:
+song_requests
+
+
+Create a .env file in the project root: 
 
 PORT=5000
 DATABASE_URL=postgresql://<username>:<password>@localhost:5432/pansify_db
 
 
-⚠️ Do not commit .env. Use .env.sample for sharing.
+Start the Server
 
-5. Start the server
 npm start
 
-
-Server will run on:
+The backend will run on:
 
 http://localhost:5000
+
 
 🗂️ Project Structure
+
+
 pansify-backend/
 ├── routes/
-│   ├── auth.js        # signup & login
-│   ├── songs.js       # songs CRUD (admin)
-│   ├── reviews.js     # song reviews
-│   └── requests.js   # song requests
+│   ├── auth.js        # Signup & login endpoints
+│   ├── songs.js       # Songs CRUD operations
+│   ├── reviews.js     # Song reviews endpoints
+│   └── requests.js   # Song requests management
+│
 ├── middleware/
-│   └── adminAuth.js  # role-based access control
-├── schema.sql        # PostgreSQL schema
-├── db.js             # pg client
-├── server.js         # app entry point
-└── .env.sample
+│   └── adminAuth.js  # Admin authorization middleware
+│
+├── schema.sql        # PostgreSQL database schema
+├── db.js             # Database connection
+├── server.js         # Express app entry point
+├── .env.sample       # Environment variables example
+└── README.md
 
-📡 API Endpoints
+API Overview
 
-Base URL:
-
+Base URL for all endpoints:
 http://localhost:5000
 
-🔐 Authentication Routes
+🔐 Authentication API
 
-Base URL:
+Base Route
 
 /api/auth
 
-Method	Endpoint	Description
-POST	/signup	Register new user
-POST	/login	Login existing user
-🔸 POST /api/auth/signup
+| Method | Endpoint | Description            |
+| ------ | -------- | ---------------------- |
+| POST   | /signup  | Register a new user    |
+| POST   | /login   | Login an existing user |
+
+
+POST /api/auth/signup
 
 Registers a new user (user or admin).
 
 {
-  "full_name": "Admin User",
-  "email": "admin@test.com",
+  "full_name": "User One",
+  "email": "user@test.com",
   "password": "1234",
-  "role": "admin"
+  "role": "user"
 }
 
-🔸 POST /api/auth/login
+
+POST /api/auth/login
 
 Logs in an existing user.
 
 {
-  "email": "admin@test.com",
+  "email": "user@test.com",
   "password": "1234"
 }
 
-🎵 Songs Routes
+🎵 Songs API
 
-Base URL:
+Base Route
 
 /api/songs
 
-Method	Endpoint	Description
-GET	/	Get all songs
-GET	/:id	Get song details
-POST	/	Add new song (admin)
-PUT	/:id	Update song (admin)
-DELETE	/:id	Delete song (admin)
-🔐 Admin-only routes require header:
+Available Endpoints
+
+| Method | Endpoint | Description               |
+| ------ | -------- | ------------------------- |
+| GET    | /        | Get all songs             |
+| GET    | /:id     | Get song details          |
+| POST   | /        | Add new song (Admin only) |
+| PUT    | /:id     | Update song (Admin only)  |
+| DELETE | /:id     | Delete song (Admin only)  |
+
+
+🔐 Admin Authorization
+
+Admin-only requests must include the following header:
+
 {
   "x-role": "admin"
 }
 
-🔸 POST /api/songs
+POST /api/songs
+
 {
   "title": "Blinding Lights",
   "artist": "The Weeknd",
@@ -124,7 +150,8 @@ DELETE	/:id	Delete song (admin)
   "cover_url": null
 }
 
-🔸 PUT /api/songs/:id
+PUT /api/songs/:id
+
 {
   "title": "Updated Title",
   "artist": "Updated Artist",
@@ -132,21 +159,29 @@ DELETE	/:id	Delete song (admin)
   "cover_url": null
 }
 
-🔸 DELETE /api/songs/:id
 
-No request body needed.
-Requires x-role: admin header.
+DELETE /api/songs/:id
 
-⭐ Reviews Routes
+No request body required.
+Only the song ID and admin header are needed.
 
-Base URL:
+
+⭐ Reviews API
+
+Base Route
 
 /api/songs/:songId/reviews
 
+Available Endpoints
+
 Method	Endpoint	Description
-GET	/	Get reviews for a song
-POST	/	Add review to a song
-🔸 POST /api/songs/:songId/reviews
+GET	/	Get all reviews for a song
+POST	/	Add a review for a song
+
+
+
+POST /api/songs/:songId/reviews
+
 {
   "reviewer_name": "Ahmad",
   "reviewer_email": "ahmad@test.com",
@@ -154,19 +189,25 @@ POST	/	Add review to a song
   "comment": "Amazing song!"
 }
 
-📝 Song Requests Routes
+📝 Song Requests API
 
-Base URL:
+Base Route
 
 /api/requests
 
-Method	Endpoint	Description
-POST	/	Create song request
-GET	/	Admin: list all requests
-GET	?email=	User: view own requests
-PUT	/:id/approve	Approve request (admin)
-PUT	/:id/reject	Reject request (admin)
-🔸 POST /api/requests
+Available Endpoints
+
+| Method | Endpoint     | Description                  |
+| ------ | ------------ | ---------------------------- |
+| POST   | /            | Create a song request        |
+| GET    | /            | Admin: view all requests     |
+| GET    | ?email=      | User: view own requests      |
+| PUT    | /:id/approve | Approve request (Admin only) |
+| PUT    | /:id/reject  | Reject request (Admin only)  |
+
+
+POST /api/requests 
+
 {
   "title": "Bohemian Rhapsody",
   "artist": "Queen",
@@ -174,15 +215,9 @@ PUT	/:id/reject	Reject request (admin)
   "requester_email": "user@test.com"
 }
 
-🔐 Admin-only actions require:
-{
-  "x-role": "admin"
-}
-
-
 🛡️ Admin Authorization Middleware
 
-Admin-only endpoints use a simple role-based middleware.
+Admin-only routes are protected using a simple middleware.
 
 export default function adminAuth(req, res, next) {
   const role = req.headers["x-role"];
@@ -193,9 +228,29 @@ export default function adminAuth(req, res, next) {
   }
 }
 
-
 If the header is missing or role is not admin, the API returns:
 
 {
   "message": "Admin access only"
 }
+
+
+🎯 Final Outcome
+
+This backend provides:
+
+A fully functional REST API
+
+Persistent PostgreSQL data storage
+
+Role-based admin authorization
+
+Clean, modular Express structure
+
+Easy frontend integration
+
+
+
+
+
+
