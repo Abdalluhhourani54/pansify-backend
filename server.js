@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import pgClient from "./db.js";
 import songRoutes from "./routes/songs.js";
 import reviewRoutes from "./routes/reviews.js";
+import requestRoutes from "./routes/requests.js";
 
 
 
@@ -20,6 +21,8 @@ app.use(morgan("dev"));
 
 app.use("/api/songs", songRoutes);
 app.use("/api/songs", reviewRoutes);
+app.use("/api/requests", requestRoutes);
+
 
 // Endpoints
 // http://localhost:5000/
