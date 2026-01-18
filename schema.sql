@@ -6,3 +6,12 @@ CREATE TABLE IF NOT EXISTS users (
   role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('user','admin')),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS songs (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  artist TEXT NOT NULL,
+  genre TEXT,
+  cover_url TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
