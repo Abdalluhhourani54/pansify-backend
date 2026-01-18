@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import pgClient from "./db.js";
+
 
 dotenv.config();
 
@@ -24,11 +26,26 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok", message: "Server is alive" });
 });
 
+app.get("/api/db-test", async (req, res) => {
+  try {
+    const result = await pgClient.query("SELECT NOW()");
+    res.json({ dbTime: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ message: "DB connection failed" });
+  }
+});
+
+
 // Not found Route
 app.use((req, res) => {
   res.status(404).json({ message: "🚫 Route not found" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Listening on PORT ${PORT}`);
+
+
+
+pgClient.connect().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Listening on PORT ${PORT}`);
+  });
 });
