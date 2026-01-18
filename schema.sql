@@ -15,3 +15,17 @@ CREATE TABLE IF NOT EXISTS songs (
   cover_url TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS reviews (
+  id SERIAL PRIMARY KEY,
+  song_id INTEGER NOT NULL,
+  reviewer_name TEXT NOT NULL,
+  reviewer_email TEXT NOT NULL,
+  rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  comment TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_song
+    FOREIGN KEY (song_id)
+    REFERENCES songs(id)
+    ON DELETE CASCADE
+);
