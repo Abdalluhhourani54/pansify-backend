@@ -113,7 +113,7 @@ Logs in an existing user.
 }
 ```
 
-##🎵 Songs API
+### 🎵 Songs API
 
 Base Route
 
@@ -130,7 +130,7 @@ Available Endpoints
 | DELETE | /:id     | Delete song (Admin only)  |
 
 
-##🔐 Admin Authorization
+### 🔐 Admin Authorization
 
 Admin-only requests must include the following header:
 ```json
@@ -165,7 +165,7 @@ No request body required.
 Only the song ID and admin header are needed.
 
 
-##⭐ Reviews API
+## ⭐ Reviews API
 
 Base Route
 
@@ -189,7 +189,7 @@ POST /api/songs/:songId/reviews
 }
 ```
 
-##📝 Song Requests API
+## 📝 Song Requests API
 
 Base Route
 
@@ -216,7 +216,7 @@ POST /api/requests
 }
 ```
 
-##🛡️ Admin Authorization Middleware
+## 🛡️ Admin Authorization Middleware
 
 Admin-only routes are protected using a simple middleware.
 
@@ -237,7 +237,7 @@ If the header is missing or role is not admin, the API returns:
 }
 ```
 
-#🎯 Final Outcome
+## 🎯 Final Outcome
 
 This backend provides:
 
