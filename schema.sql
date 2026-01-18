@@ -29,3 +29,13 @@ CREATE TABLE IF NOT EXISTS reviews (
     REFERENCES songs(id)
     ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS song_requests (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  artist TEXT NOT NULL,
+  genre TEXT,
+  requester_email TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'Pending' CHECK (status IN ('Pending', 'Approved', 'Rejected')),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
