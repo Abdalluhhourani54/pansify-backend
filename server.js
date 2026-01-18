@@ -3,6 +3,8 @@ import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import pgClient from "./db.js";
+import songRoutes from "./routes/songs.js";
+
 
 
 dotenv.config();
@@ -35,6 +37,7 @@ app.get("/api/db-test", async (req, res) => {
   }
 });
 
+app.use("/api/songs", songRoutes);
 
 // Not found Route
 app.use((req, res) => {
