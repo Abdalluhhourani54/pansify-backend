@@ -7,6 +7,8 @@ import songRoutes from "./routes/songs.js";
 import reviewRoutes from "./routes/reviews.js";
 import requestRoutes from "./routes/requests.js";
 import authRoutes from "./routes/auth.js";
+import path from "path";
+
 
 
 
@@ -26,6 +28,7 @@ app.use("/api/songs", songRoutes);
 app.use("/api/songs", reviewRoutes);
 app.use("/api/requests", requestRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/uploads", express.static("uploads"));
 
 
 
