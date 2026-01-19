@@ -28,7 +28,16 @@ app.use("/api/songs", songRoutes);
 app.use("/api/songs", reviewRoutes);
 app.use("/api/requests", requestRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/uploads", express.static("uploads"));
+
+
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// serve uploaded images
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
 

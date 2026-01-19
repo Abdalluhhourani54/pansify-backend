@@ -13,9 +13,20 @@ const router = express.Router();
 // GET /api/songs (public)
 router.get("/", async (req, res) => {
   try {
-    const result = await pgClient.query("SELECT * FROM songs ORDER BY id DESC");
+    const result = await pgClient.query(`
+      SELECT 
+        s.*,
+        COALESCE(AVG(r.rating), 0) AS avg_rating,
+        COUNT(r.id) AS reviews_count
+      FROM songs s
+      LEFT JOIN reviews r ON r.song_id = s.id
+      GROUP BY s.id
+      ORDER BY s.id DESC
+    `);
+
     res.json(result.rows);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -67,33 +78,33 @@ const cover_url = req.file ? `/uploads/${req.file.filename}` : null;
   }
 });
 
+
 // PUT /api/songs/:id (admin only)
-router.put("/:id", adminAuth, async (req, res) => {
-  const { title, artist, genre, cover_url } = req.body;
-
-  if (!title || !artist) {
-    return res.status(400).json({ message: "title and artist are required" });
-  }
-
+router.put("/:id", adminAuth, upload.single("cover"), async (req, res) => {
   try {
+    const { title, artist, genre, existing_cover } = req.body;
+
+    // if new file uploaded => use it
+    // else keep old cover from existing_cover
+    const cover_url = req.file
+      ? `/uploads/${req.file.filename}`
+      : (existing_cover || null);
+
     const result = await pgClient.query(
       `UPDATE songs
-       SET title = $1,
-           artist = $2,
-           genre = $3,
-           cover_url = COALESCE($4, cover_url)
-       WHERE id = $5
+       SET title=$1, artist=$2, genre=$3, cover_url=$4
+       WHERE id=$5
        RETURNING *`,
-      [title, artist, genre || null, newCover, req.params.id]
+      [title, artist, genre || null, cover_url, req.params.id]
     );
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: "Song not found" });
     }
 
-
     res.json(result.rows[0]);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
