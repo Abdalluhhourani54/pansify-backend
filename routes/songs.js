@@ -5,12 +5,6 @@ import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
-/**
- * SONGS API
- * Base: /api/songs
- */
-
-// GET /api/songs (public)
 router.get("/", async (req, res) => {
   try {
     const result = await pgClient.query(`
@@ -31,7 +25,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/songs/:id (public)
+
 router.get("/:id", async (req, res) => {
   try {
     const result = await pgClient.query("SELECT * FROM songs WHERE id = $1", [
@@ -51,7 +45,7 @@ router.get("/:id", async (req, res) => {
 
 
 
-// POST /api/songs (admin only)
+locle/api/songs
 router.post("/", adminAuth, upload.single("cover"), async (req, res) => {
   const { title, artist, genre } = req.body;
 
@@ -79,13 +73,12 @@ const cover_url = req.file ? `/uploads/${req.file.filename}` : null;
 });
 
 
-// PUT /api/songs/:id (admin only)
+
 router.put("/:id", adminAuth, upload.single("cover"), async (req, res) => {
   try {
     const { title, artist, genre, existing_cover } = req.body;
 
-    // if new file uploaded => use it
-    // else keep old cover from existing_cover
+ 
     const cover_url = req.file
       ? `/uploads/${req.file.filename}`
       : (existing_cover || null);
@@ -110,7 +103,7 @@ router.put("/:id", adminAuth, upload.single("cover"), async (req, res) => {
 });
 
 
-// DELETE /api/songs/:id (admin only)
+
 router.delete("/:id", adminAuth, async (req, res) => {
   try {
     const result = await pgClient.query(

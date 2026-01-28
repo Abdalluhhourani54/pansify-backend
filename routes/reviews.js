@@ -3,7 +3,7 @@ import pgClient from "../db.js";
 
 const router = express.Router();
 
-// GET /api/songs/:id/reviews
+
 router.get("/:id/reviews", async (req, res) => {
   try {
     const result = await pgClient.query(
@@ -17,7 +17,7 @@ router.get("/:id/reviews", async (req, res) => {
   }
 });
 
-// POST /api/songs/:id/reviews
+
 router.post("/:id/reviews", async (req, res) => {
   try {
     const { reviewer_name, reviewer_email, rating, comment } = req.body;

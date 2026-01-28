@@ -79,7 +79,7 @@ router.put("/:id/approve", adminAuth, async (req, res) => {
   }
 });
 
-// PUT /api/requests/:id/reject (admin only)
+
 router.put("/:id/reject", adminAuth, async (req, res) => {
   try {
     const result = await pgClient.query(
