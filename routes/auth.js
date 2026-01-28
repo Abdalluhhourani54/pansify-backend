@@ -3,8 +3,7 @@ import db from "../db.js";
 
 const router = express.Router();
 
-// POST /api/auth/signup
-// body: { full_name, email, password, role }
+
 router.post("/signup", async (req, res) => {
   try {
     const { full_name, email, password, role } = req.body;
@@ -18,14 +17,14 @@ router.post("/signup", async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const safeRole = role === "admin" ? "admin" : "user"; // keep it simple
+    const safeRole = role === "admin" ? "admin" : "user"; 
 
     const result = await db.query(
       "INSERT INTO users (full_name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *",
       [full_name, email, password, safeRole]
     );
 
-    // return user (you can also remove password from response if you want)
+    
     res.status(201).json({ user: result.rows[0] });
   } catch (err) {
     console.log("SIGNUP ERROR:", err.message);
@@ -33,8 +32,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// POST /api/auth/login
-// body: { email, password }
+
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;

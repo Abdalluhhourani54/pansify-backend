@@ -25,6 +25,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use("/api/songs", songRoutes);
+
 app.use("/api/songs", reviewRoutes);
 app.use("/api/requests", requestRoutes);
 app.use("/api/auth", authRoutes);
@@ -41,13 +42,10 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
 
-// Endpoints
-// http://localhost:5000/
 app.get("/", (req, res) => {
   res.send("✅ Pansify API is running!");
 });
 
-// http://localhost:5000/health
 app.get("/health", (req, res) => {
   res.json({ status: "ok", message: "Server is alive" });
 });
@@ -63,7 +61,6 @@ app.get("/api/db-test", async (req, res) => {
 
 
 
-// Not found Route
 app.use((req, res) => {
   res.status(404).json({ message: "🚫 Route not found" });
 });
